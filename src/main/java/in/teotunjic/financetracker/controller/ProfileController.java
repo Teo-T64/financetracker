@@ -46,8 +46,8 @@ public class ProfileController {
             return ResponseEntity.ok(res);
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message:",e.getMessage()));
-        }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", e.getMessage()));        }
 
     }
 

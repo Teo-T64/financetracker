@@ -12,7 +12,7 @@ import java.util.Collections;
 
 @RequiredArgsConstructor
 @Service
-public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
+public class AppUserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
     private final ProfileRepo profileRepo;
 
     @Override

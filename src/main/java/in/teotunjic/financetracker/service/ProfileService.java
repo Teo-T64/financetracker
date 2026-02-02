@@ -4,6 +4,7 @@ import in.teotunjic.financetracker.dto.AuthDTO;
 import in.teotunjic.financetracker.dto.ProfileDTO;
 import in.teotunjic.financetracker.entity.ProfileEntity;
 import in.teotunjic.financetracker.repo.ProfileRepo;
+import in.teotunjic.financetracker.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.NewConstructorTypeMunger;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +27,7 @@ public class ProfileService {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     public ProfileDTO registerProfile(ProfileDTO profileDTO){
         ProfileEntity newProfile = toProfileEntity(profileDTO);
@@ -33,7 +35,7 @@ public class ProfileService {
         newProfile = profileRepo.save(newProfile);
         String activationLink = "http://localhost:8080/api/v1.0/activate?token=" + newProfile.getActivationToken();
         String subject = "Activate your financeTracker account";
-        String body = "Click on the link to activate account" + activationLink;
+        String body = "Click on the link to activate account " + activationLink;
         emailService.sendEmail(newProfile.getEmail(), subject,body);
         return toProfileDTO(newProfile);
     }
@@ -69,33 +71,28 @@ public class ProfileService {
 
     }
 
-    public ProfileDTO getPublicProfile(String email){
-        ProfileEntity currUser = null;
-        if(email == null){
-           currUser =  getCurrProfile();
-        }else{
-            profileRepo.findByEmail(email)
-                    .orElseThrow(()->new UsernameNotFoundException("Profile not found with e-mail: "+ email));
-
-        }
+    public ProfileDTO getPublicProfile(String email) {
+        ProfileEntity currUser = (email == null)
+                ? getCurrProfile()
+                : profileRepo.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Not found"));
 
         return ProfileDTO.builder()
                 .id(currUser.getId())
                 .fullName(currUser.getFullName())
-                .pfpImageUrl(currUser.getPfpImageUrl())
                 .email(currUser.getEmail())
+                .pfpImageUrl(currUser.getPfpImageUrl())
                 .createdAt(currUser.getCreatedAt())
                 .updatedAt(currUser.getUpdatedAt())
                 .build();
-
     }
 
     public Map<String,Object> authenticateAndGenerateToken(AuthDTO authDTO) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authDTO.getEmail(),authDTO.getPassword()));
-
-            return Map.of("token:","JWT token","user:",getPublicProfile(authDTO.getEmail()));
+            String token = jwtUtil.generateToken(authDTO.getEmail());
+            return Map.of("token",token,"user",getPublicProfile(authDTO.getEmail()));
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Invalid e-mail or password");
         }
     }
