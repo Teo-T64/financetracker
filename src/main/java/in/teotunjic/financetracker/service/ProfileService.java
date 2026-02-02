@@ -1,16 +1,20 @@
 package in.teotunjic.financetracker.service;
 
+import in.teotunjic.financetracker.dto.AuthDTO;
 import in.teotunjic.financetracker.dto.ProfileDTO;
 import in.teotunjic.financetracker.entity.ProfileEntity;
 import in.teotunjic.financetracker.repo.ProfileRepo;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.NewConstructorTypeMunger;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,6 +25,7 @@ public class ProfileService {
     private final ProfileRepo profileRepo;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
     public ProfileDTO registerProfile(ProfileDTO profileDTO){
         ProfileEntity newProfile = toProfileEntity(profileDTO);
@@ -85,4 +90,13 @@ public class ProfileService {
 
     }
 
+    public Map<String,Object> authenticateAndGenerateToken(AuthDTO authDTO) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authDTO.getEmail(),authDTO.getPassword()));
+
+            return Map.of("token:","JWT token","user:",getPublicProfile(authDTO.getEmail()));
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid e-mail or password");
+        }
+    }
 }
