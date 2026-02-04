@@ -6,10 +6,9 @@ import in.teotunjic.financetracker.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,4 +24,21 @@ public class CategoryController {
 
     }
 
+    @GetMapping
+    public ResponseEntity<List<CategoryDTO>> getCategories(){
+        List<CategoryDTO> categories =  categoryService.getCategoriesForCurrUser();
+        return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("/{type}")
+    public ResponseEntity<List<CategoryDTO>> getCategoriesByTypeCurrUser(@PathVariable String type){
+        List<CategoryDTO> list = categoryService.listOfCategoriesCurrUser(type);
+        return ResponseEntity.ok(list);
+    }
+
+    @PutMapping("/{categoryId}")
+    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long categoryId,@RequestBody CategoryDTO categoryDTO){
+        CategoryDTO updatedCategory =  categoryService.updateCategory(categoryId,categoryDTO);
+        return ResponseEntity.ok(updatedCategory);
+    }
 }

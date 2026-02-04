@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -38,10 +40,33 @@ public class CategoryService {
 
     }
 
+    public List<CategoryDTO> listOfCategoriesCurrUser(String type){
+        ProfileEntity profile = profileService.getCurrProfile();
+        List<CategoryEntity> categories =  categoryRepo.findByTypeAndProfileId(type,profile.getId());
+        return categories.stream().map(this::toCategoryDTO).toList();
+
+    }
+
+    public CategoryDTO updateCategory(Long categoryId,CategoryDTO categoryDTO){
+        ProfileEntity profile =  profileService.getCurrProfile();
+        CategoryEntity existingCategory = categoryRepo.findByIdAndProfileId(categoryId, profile.getId())
+                .orElseThrow(()->new RuntimeException("Category not found"));
+        existingCategory.setName(categoryDTO.getName());
+        existingCategory.setIcon(categoryDTO.getIcon());
+        existingCategory =  categoryRepo.save(existingCategory);
+        return toCategoryDTO(existingCategory);
+    }
+
+    public List<CategoryDTO> getCategoriesForCurrUser(){
+        ProfileEntity profile = profileService.getCurrProfile();
+        List<CategoryEntity> categories = categoryRepo.findByProfileId(profile.getId());
+        return categories.stream().map(this::toCategoryDTO).toList();
+    }
+
     public CategoryDTO saveCategory(CategoryDTO categoryDTO){
         ProfileEntity profile = profileService.getCurrProfile();
         if(categoryRepo.existsByNameAndProfileId(categoryDTO.getName(), profile.getId())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT,"Category with this name already exists!");
+            throw new RuntimeException("Category with this name already exists!");
         }
         CategoryEntity newCategory = toCategoryEntity(categoryDTO,profile);
         newCategory =  categoryRepo.save(newCategory);
