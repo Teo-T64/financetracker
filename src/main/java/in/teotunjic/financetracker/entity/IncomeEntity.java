@@ -38,7 +38,7 @@ public class IncomeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id",nullable = false)
-    private ProfileEntity profileEntity;
+    private ProfileEntity profile;
 
     @PrePersist
     public void prePersist(){

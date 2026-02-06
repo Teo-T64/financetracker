@@ -11,12 +11,18 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface IncomeRepo extends JpaRepository<IncomeEntity,Long> {
-    List<IncomeEntity> findByProfileIdOrderByDesc(Long profileId);
-    List<IncomeEntity> findTop5ByProfileIdOrderByDesc(Long profileId);
-    @Query("SELECT SUM(i.amount) FROM IncomeEntity i WHERE i.profileEntity.id = :profileId ")
-    BigDecimal findTotalSumProfileId(@Param("profileId") Long profileId);
-    List<IncomeEntity> findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(Long profileId, LocalDate startDate, LocalDate endDate, String name, Sort sort);
-    List<IncomeEntity> findByProfileIdAndDateBetween(Long profileId, LocalDate startDate, LocalDate endDate);
+public interface IncomeRepo extends JpaRepository<IncomeEntity, Long> {
 
+    List<IncomeEntity> findByProfile_IdOrderByDateDesc(Long profileId);
+
+    List<IncomeEntity> findTop5ByProfile_IdOrderByDateDesc(Long profileId);
+
+    @Query("SELECT SUM(i.amount) FROM IncomeEntity i WHERE i.profile.id = :profileId ")
+    BigDecimal findTotalSumProfileId(@Param("profileId") Long profileId);
+
+    List<IncomeEntity> findByProfile_IdAndDateBetweenAndNameContainingIgnoreCase(
+            Long profileId, LocalDate startDate, LocalDate endDate, String name, Sort sort);
+
+    List<IncomeEntity> findByProfile_IdAndDateBetween(
+            Long profileId, LocalDate startDate, LocalDate endDate);
 }

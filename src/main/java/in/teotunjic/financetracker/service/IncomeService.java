@@ -4,6 +4,7 @@ import in.teotunjic.financetracker.dto.IncomeDTO;
 import in.teotunjic.financetracker.entity.CategoryEntity;
 import in.teotunjic.financetracker.entity.IncomeEntity;
 import in.teotunjic.financetracker.entity.ProfileEntity;
+import in.teotunjic.financetracker.repo.CategoryRepo;
 import in.teotunjic.financetracker.repo.IncomeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,15 +12,25 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class IncomeService {
-    private final CategoryService categoryService;
+    private final CategoryRepo categoryRepo;
     private final IncomeRepo incomeRepo;
+    private final ProfileService profileService;
+
+    public IncomeDTO addIncome(IncomeDTO incomeDTO){
+        ProfileEntity profile = profileService.getCurrProfile();
+        CategoryEntity category =  categoryRepo.findById(incomeDTO.getCategoryId())
+                .orElseThrow(()-> new RuntimeException("Category not found"));
+        IncomeEntity newExpense =  toIncomeEntity(incomeDTO,profile,category);
+        newExpense = incomeRepo.save(newExpense);
+        return toIncomeDTO(newExpense);
+    }
 
     public IncomeEntity toIncomeEntity(IncomeDTO incomeDTO, ProfileEntity profileEntity, CategoryEntity categoryEntity){
         return IncomeEntity.builder()
                 .name(incomeDTO.getName())
                 .icon(incomeDTO.getIcon())
                 .amount(incomeDTO.getAmount())
-                .profileEntity(profileEntity)
+                .profile(profileEntity)
                 .categoryEntity(categoryEntity)
                 .build();
     }
