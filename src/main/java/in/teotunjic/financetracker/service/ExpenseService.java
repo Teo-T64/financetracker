@@ -9,6 +9,10 @@ import in.teotunjic.financetracker.repo.ExpenseRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ExpenseService {
@@ -24,6 +28,25 @@ public class ExpenseService {
         ExpenseEntity newExpense =  toExpenseEntity(expenseDTO,profile,category);
         newExpense = expenseRepo.save(newExpense);
         return toExpenseDTO(newExpense);
+    }
+
+    public void deleteExpense(Long expenseId){
+        ProfileEntity profile = profileService.getCurrProfile();
+        ExpenseEntity toDelete =  expenseRepo.findById(expenseId)
+                .orElseThrow(()-> new RuntimeException("Expense not found"));
+        if(!(toDelete.getProfile().getId().equals(profile.getId()))){
+            throw new RuntimeException("Unauthorized to delete this expense");
+        }
+        expenseRepo.delete(toDelete);
+    }
+
+    public List<ExpenseDTO> getCurrMonthExpensesForCurrUser(){
+        ProfileEntity profile = profileService.getCurrProfile();
+        LocalDate now = LocalDate.now();
+        LocalDate startDate =  now.withDayOfMonth(1);
+        LocalDate endDate = now.withDayOfMonth(now.lengthOfMonth());
+        List<ExpenseEntity> expenses =  expenseRepo.findByProfile_IdAndDateBetween(profile.getId(), startDate,endDate);
+        return expenses.stream().map(this::toExpenseDTO).toList();
     }
 
     public ExpenseEntity toExpenseEntity(ExpenseDTO expenseDTO, ProfileEntity profileEntity, CategoryEntity categoryEntity){

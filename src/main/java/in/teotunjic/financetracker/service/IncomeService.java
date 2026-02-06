@@ -9,6 +9,9 @@ import in.teotunjic.financetracker.repo.IncomeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class IncomeService {
@@ -23,6 +26,25 @@ public class IncomeService {
         IncomeEntity newExpense =  toIncomeEntity(incomeDTO,profile,category);
         newExpense = incomeRepo.save(newExpense);
         return toIncomeDTO(newExpense);
+    }
+
+    public void deleteIncome(Long incomeId){
+        ProfileEntity profile = profileService.getCurrProfile();
+        IncomeEntity toDelete =  incomeRepo.findById(incomeId)
+                .orElseThrow(()-> new RuntimeException("Income not found"));
+        if(!(toDelete.getProfile().getId().equals(profile.getId()))){
+            throw new RuntimeException("Unauthorized to delete this income");
+        }
+        incomeRepo.delete(toDelete);
+    }
+
+    public List<IncomeDTO> getCurrMonthExpensesForCurrUser(){
+        ProfileEntity profile = profileService.getCurrProfile();
+        LocalDate now = LocalDate.now();
+        LocalDate startDate =  now.withDayOfMonth(1);
+        LocalDate endDate = now.withDayOfMonth(now.lengthOfMonth());
+        List<IncomeEntity> incomes =  incomeRepo.findByProfile_IdAndDateBetween(profile.getId(), startDate,endDate);
+        return incomes.stream().map(this::toIncomeDTO).toList();
     }
 
     public IncomeEntity toIncomeEntity(IncomeDTO incomeDTO, ProfileEntity profileEntity, CategoryEntity categoryEntity){
