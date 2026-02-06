@@ -9,6 +9,7 @@ import in.teotunjic.financetracker.repo.IncomeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -36,6 +37,19 @@ public class IncomeService {
             throw new RuntimeException("Unauthorized to delete this income");
         }
         incomeRepo.delete(toDelete);
+    }
+
+
+    public List<IncomeDTO> getLatest5IncomesForCurrUser(){
+        ProfileEntity profile  = profileService.getCurrProfile();
+        List<IncomeEntity> incomes =  incomeRepo.findTop5ByProfile_IdOrderByDateDesc(profile.getId());
+        return incomes.stream().map(this::toIncomeDTO).toList();
+    }
+
+    public BigDecimal getTotalIncomeForCurrUser(){
+        ProfileEntity profile  = profileService.getCurrProfile();
+        BigDecimal total = incomeRepo.findTotalSumProfileId(profile.getId());
+        return total != null ? total : BigDecimal.ZERO;
     }
 
     public List<IncomeDTO> getCurrMonthExpensesForCurrUser(){

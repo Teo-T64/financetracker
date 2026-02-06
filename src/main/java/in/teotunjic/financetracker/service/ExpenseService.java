@@ -9,6 +9,7 @@ import in.teotunjic.financetracker.repo.ExpenseRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +29,18 @@ public class ExpenseService {
         ExpenseEntity newExpense =  toExpenseEntity(expenseDTO,profile,category);
         newExpense = expenseRepo.save(newExpense);
         return toExpenseDTO(newExpense);
+    }
+
+    public List<ExpenseDTO> getLatest5ExpensesForCurrUser(){
+        ProfileEntity profile  = profileService.getCurrProfile();
+        List<ExpenseEntity> expenses =  expenseRepo.findTop5ByProfile_IdOrderByDateDesc(profile.getId());
+        return expenses.stream().map(this::toExpenseDTO).toList();
+    }
+
+    public BigDecimal getTotalExpenseForCurrUser(){
+        ProfileEntity profile  = profileService.getCurrProfile();
+        BigDecimal total = expenseRepo.findTotalSumProfileId(profile.getId());
+        return total != null ? total : BigDecimal.ZERO;
     }
 
     public void deleteExpense(Long expenseId){
