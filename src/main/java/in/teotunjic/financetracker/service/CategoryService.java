@@ -30,6 +30,7 @@ public class CategoryService {
         return CategoryDTO.builder()
                 .id(categoryEntity.getId())
                 .profileId(categoryEntity.getProfile()!= null ? categoryEntity.getProfile().getId() : null)
+                .icon(categoryEntity.getIcon())
                 .name(categoryEntity.getName())
                 .type(categoryEntity.getType())
                 .createdAt(categoryEntity.getCreatedAt())
