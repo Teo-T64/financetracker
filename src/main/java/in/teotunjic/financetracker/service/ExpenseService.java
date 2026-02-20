@@ -80,6 +80,7 @@ public class ExpenseService {
                 .icon(expenseDTO.getIcon())
                 .amount(expenseDTO.getAmount())
                 .profile(profileEntity)
+                .date(expenseDTO.getDate())
                 .categoryEntity(categoryEntity)
                 .build();
     }

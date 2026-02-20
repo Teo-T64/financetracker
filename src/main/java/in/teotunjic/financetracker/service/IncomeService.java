@@ -75,6 +75,7 @@ public class IncomeService {
                 .icon(incomeDTO.getIcon())
                 .amount(incomeDTO.getAmount())
                 .profile(profileEntity)
+                .date(incomeDTO.getDate())
                 .categoryEntity(categoryEntity)
                 .build();
     }
