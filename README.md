@@ -1,3 +1,4 @@
-**Personal finance tracking app**
+**Personal finance tracking app API**
 
-An app that helps you track and gain insight in your financial habits
+Backend for the financetrackingwebapp repo on my github
+
