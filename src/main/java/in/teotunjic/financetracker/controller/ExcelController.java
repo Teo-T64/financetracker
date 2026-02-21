@@ -1,6 +1,7 @@
 package in.teotunjic.financetracker.controller;
 
 import in.teotunjic.financetracker.service.ExcelService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -14,16 +15,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/download/expenses")
-public class ExpenseExcelController {
+@RequestMapping("/download")
+@RequiredArgsConstructor
+public class ExcelController {
     private final ExcelService excelService;
 
-    public ExpenseExcelController(ExcelService excelService) {
-        this.excelService = excelService;
-    }
-
-
-    @GetMapping()
+    @GetMapping("/expenses")
     public ResponseEntity<Resource> downloadExpenses() throws IOException {
         String filename = "expenses.xlsx";
         ByteArrayInputStream data = excelService.getExpenseData();
@@ -34,4 +31,14 @@ public class ExpenseExcelController {
 
     }
 
+    @GetMapping("/incomes")
+    public ResponseEntity<Resource> downloadIncomes() throws IOException {
+        String filename = "incomes.xlsx";
+        ByteArrayInputStream data = excelService.getIncomeData();
+        InputStreamResource resource = new InputStreamResource(data);
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename="+filename)
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .body(resource);
+
+    }
 }

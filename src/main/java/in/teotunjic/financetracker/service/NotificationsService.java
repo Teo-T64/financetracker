@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class NotificationsService {
     private final ProfileRepo profileRepo;
     private final EmailService emailService;
     private final ExpenseService expenseService;
+    private final ExcelService excelService;
 
     @Value("${finance.tracker.frontend.url}")
     private String frontendUrl;
@@ -68,5 +70,58 @@ public class NotificationsService {
         log.info("Job ended: sendDailyExpenseSummary()");
 
 
+    }
+
+    public void sendIncomeEmail() {
+        log.info("Job started: sendIncomeEmail()");
+        List<ProfileEntity> users = profileRepo.findAll();
+
+        for (ProfileEntity profile : users) {
+            try {
+                byte[] excelContent = excelService.getIncomeData().readAllBytes();
+
+                String body = "Hello " + profile.getFullName() + ",<br><br>" +
+                        "Please find your income report for the current month attached below.<br><br>" +
+                        "Best regards,<br>Finance Tracker Team";
+
+                emailService.sendEmailWithAttachment(
+                        profile.getEmail(),
+                        "Monthly Income Report",
+                        body,
+                        excelContent,
+                        "Income_Report.xlsx"
+                );
+
+            } catch (Exception e) {
+                log.error("Failed to send income email to: " + profile.getEmail(), e);
+            }
+        }
+        log.info("Job ended: sendIncomeEmail()");
+    }
+    public void sendExpenseEmail() {
+        log.info("Job started: sendExpenseEmail()");
+        List<ProfileEntity> users = profileRepo.findAll();
+
+        for (ProfileEntity profile : users) {
+            try {
+                byte[] excelContent = excelService.getExpenseData().readAllBytes();
+
+                String body = "Hello " + profile.getFullName() + ",<br><br>" +
+                        "Please find your expense report for the current month attached below.<br><br>" +
+                        "Best regards,<br>Finance Tracker Team";
+
+                emailService.sendEmailWithAttachment(
+                        profile.getEmail(),
+                        "Monthly Expense Report",
+                        body,
+                        excelContent,
+                        "Expense_Report.xlsx"
+                );
+
+            } catch (Exception e) {
+                log.error("Failed to send expense email to: " + profile.getEmail(), e);
+            }
+        }
+        log.info("Job ended: sendExpenseEmail()");
     }
 }
