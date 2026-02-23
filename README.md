@@ -27,9 +27,7 @@ The database is designed to handle multi-tenant data, ensuring users only access
 
 ---
 
-## Tech Stack
-* **Language:** Java
-* **Framework:** SpringBoot
+## Tech Stack ![Java](https://img.shields.io/static/v1?style=for-the-badge&message=Java&color=ED8B00&logo=openjdk&logoColor=white&label=)  ![Spring Boot](https://img.shields.io/static/v1?style=for-the-badge&message=Spring+Boot&color=6DB33F&logo=spring-boot&logoColor=white&label=) ![PostgreSQL](https://img.shields.io/static/v1?style=for-the-badge&message=PostgreSQL&color=4169E1&logo=postgresql&logoColor=white&label=) ![MySQL](https://img.shields.io/static/v1?style=for-the-badge&message=MySQL&color=4479A1&logo=mysql&logoColor=white&label=) ![JWT](https://img.shields.io/static/v1?style=for-the-badge&message=JWT&color=d63aff&logo=json-web-tokens&logoColor=white&label=)
 * **Database:** PostgreSQL (production Database), MySQL(local database)
 * **Security:** Spring Security Configuration
 ---
