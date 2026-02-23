@@ -18,7 +18,7 @@ The database is designed to handle multi-tenant data, ensuring users only access
 
 ---
 
-## 🚀 Features
+## Features
 * **Authentication:** Secure registration and login using JWT (JSON Web Tokens).
 * **Transaction Management:** Full CRUD operations for Expenses and Incomes.
 * **Custom Categorization:** Users can create and update their own categories with custom icons.
@@ -27,14 +27,14 @@ The database is designed to handle multi-tenant data, ensuring users only access
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 * **Language:** Java
 * **Framework:** SpringBoot
 * **Database:** PostgreSQL (production Database), MySQL(local database)
 * **Security:** Spring Security Configuration
 ---
 
-## 🛤️ Key API Endpoints 
+## Key API Endpoints 
 
 | Method | Endpoint | Description | Auth |
 | :--- | :--- | :--- | :--- |
@@ -45,7 +45,7 @@ The database is designed to handle multi-tenant data, ensuring users only access
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 1. **Clone the repository**
    ```bash
