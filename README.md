@@ -38,7 +38,7 @@ The database is designed to handle multi-tenant data, ensuring users only access
 | :--- | :--- | :--- | :--- |
 | `POST` | `/api/v1/auth/register` | Create a new account | No |
 | `GET` | `/api/v1/categories` | List all user categories | Yes |
-| `POST` | `/api/v1/expenses` | Create a new expense | Yes |
+| `PUT` | `/api/v1/categories/${categoryId}` | Update selected category | Yes |
 | `DELETE` | `/api/v1/expenses/${id}` | Delete a certain expense | Yes |
 
 ---
