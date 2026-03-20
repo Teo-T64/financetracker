@@ -1,5 +1,5 @@
-# Personal Finance Tracking API 
-> Backend service for the `financetrackingwebapp`
+# Personal Finance Tracker API 
+> Backend service for the `financetrackerwebapp`
 
 This is a RESTful API designed to manage personal transactions, custom categories, and user profiles.
 
@@ -38,7 +38,7 @@ The database is designed to handle multi-tenant data, ensuring users only access
 | :--- | :--- | :--- | :--- |
 | `POST` | `/api/v1/auth/register` | Create a new account | No |
 | `GET` | `/api/v1/categories` | List all user categories | Yes |
-| `POST` | `/api/v1/expenses` | Create a new expense | Yes |
+| `PUT` | `/api/v1/categories/${categoryId}` | Update selected category | Yes |
 | `DELETE` | `/api/v1/expenses/${id}` | Delete a certain expense | Yes |
 
 ---
@@ -47,5 +47,4 @@ The database is designed to handle multi-tenant data, ensuring users only access
 
 1. **Clone the repository**
    ```bash
-   git clone [https://github.com/Teo-T64/financetrackingapi.git](https://github.com/Teo-T64/financetrackingapi.git)
-   cd financetrackingapi
+   git clone https://github.com/Teo-T64/financetracker.git
